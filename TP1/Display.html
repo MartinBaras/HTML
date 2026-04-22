@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Display</title>
+        <style>
+            /* reset */
+            *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            }
+            /* contenedor */
+            .cont{width:400px;height:200px;border: 2px solid black;}
+            /* colores */
+            .bg-red{background-color: red;}
+            .bg-green{background-color: green;}
+            .bg-blue{background-color: blue;}
+            .bg-violet{background-color: violet;}
+            /* caja 200px */
+            /* el display block no funciona con width */
+            .caja-block{display:block;height:40px} 
+            .caja-fr{display:flow-root;}
+            .caja{width:60px;height:40px} 
+            .acom{border-radius:10px;margin-top:3px;margin-right:3px;}
+            .izq{float:left;}
+
+        </style>
+    </head>
+    <body>
+        </style>
+        <section class="cont bg-violet caja-fr">
+        <div class="caja bg-red izq"></div>
+        <div class="caja bg-blue izq"></div>
+        <div class="caja bg-green izq"></div>
+        </section>
+    </body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE = html>
+<html>
+    <head>
+        <title>Pagina</title>
+        <style>
+            /* ── BASE ─────────────────────────────────────────── */
+            .card       { border-radius: 8px;}
+            .card--smh   { width: 160px; height: 100px; }
+            .card--mdh   { width: 240px; height: 140px; }
+            .card--lgh   { width: 320px; height: 200px; }
+
+            .card--smv   { height: 160px; width: 100px; }
+            .card--mdv   { height: 240px; width: 140px; }
+            .card--lgv   { height: 320px; width: 200px; }
+            
+            /* ── OVERFLOW ──────────────────────────────────────── */
+            .of-visible {overflow:visible;}
+            .of-hidden {overflow:hidden;}
+            .of-scroll {overflow:scroll;}
+            .of-auto {overflow:auto;}
+            /* ── BORDES ANCHURAS ───────────────────────────────── */
+            .border-20 {border: 20px}
+
+            /* ── BORDES ESTILOS ────────────────────────────────── */
+            .border-solid {border: solid;}
+
+            /* ── BORDES COLOR ──────────────────────────────────── */
+            .border-black {border-color: black;}
+
+            /* ── COLORES (propiedad única) ─────────────────────── */
+            .bg-violet  { background: #6c63ff; }
+            .bg-red     { background: #ff6584; }
+            .bg-green   { background: #22c55e; }
+            .bg-yellow  { background: #f59e0b; }
+            .bg-cyan    { background: #06b6d4; }
+            .bg-dark    { background: #1c2235; }
+
+            /* ── ESPACIADO ─────────────────────────────────────── */
+            .p-sm  { padding: 8px;  }
+            .p-md  { padding: 16px; }
+            .p-lg  { padding: 24px; }
+
+            .m-sm  { margin: 8px;  }
+            .m-md  { margin: 16px; }
+            .m-auto{ margin-left: auto; margin-right: auto; }
+
+            /* ── DISPLAY ───────────────────────────────────────── */
+            .d-block        { display: block; }
+            .d-inline-block { display: inline-block; }
+            .d-flex         { display: flex; }
+
+            /* ── LAYOUT UTILITIES ──────────────────────────────── */
+            .w-full  { width: 100%; }
+            .w-half  { width: 50%;  }
+            .w-third { width: 33.33%; }
+            .clearfix::after { content:''; display:block; clear:both; }
+
+            /* ── FUNCIONES MOUSE ───────────────────────────────── */
+            .card:hover{background-color: #1c2235;}
+            .card:active{background-color: white;}
+        </style>
+    </head>
+    <body>
+        <div class="card card--smh bg-green border-20 border-solid border-black of-visible">Las abejas vuelan</div>
+        <div class="card card--smh bg-cyan border-20 border-solid border-black of-hidden">Las abejas vuelan</div>
+        <div class="card card--smh bg-red border-20 border-solid border-black of-scroll">Las abejas vuelan</div>
+        <div class="card card--smh bg-violet border-20 border-solid border-black of-auto">Las abejas vuelan</div>
+    </body>
+</html>
