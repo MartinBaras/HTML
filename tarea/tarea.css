@@ -7,21 +7,32 @@
     padding: 0;
 }
 
-.bg-black { background-color: #131825; }
-.bg-purple { background-color: #6c63ff; }
-.bg-lblack { background-color: #232a3e; }
 .bg-red { background-color: #e0002d; }
-.bg-blue { background-color: #002488; }
-.bg-green { background-color: #22c55e; }
+.bg-rose { background-color: #f43f5e; }
 .bg-orange { background-color: #f59e0b; }
+.bg-amber { background-color: #f59e0b; }
+.bg-yellow { background-color: #eab308; }
+.bg-lime { background-color: #84cc16; }
+.bg-green { background-color: #22c55e; }
+.bg-emerald { background-color: #10b981; }
+.bg-teal { background-color: #14b8a6; }
+.bg-cyan { background-color: #0891b2; }
 .bg-lblue { background-color: #06b6d4; }
+.bg-blue { background-color: #002488; }
+.bg-indigo { background-color: #4f46e5; }
+.bg-violet { background-color: #7c3aed; }
+.bg-purple { background-color: #6c63ff; }
+.bg-fuchsia { background-color: #d946ef; }
 .bg-pink { background-color: #ec4899; }
-.bg-gray { background-color: rgba(185, 185, 185, 0.548); }
-.bg-selection{border:2px solid rgb(0, 255, 21)}
+.bg-black { background-color: #131825; }
+.bg-lblack { background-color: #232a3e; }
+
+.border-selection{border:2px solid rgb(0, 255, 21)}
 
 .text-font{font-family: "Lilita One";font-size: 101%;}
 
 .border{border:2px solid black}
+.border-left{border-left: 2px solid black}
 
 .flex { display: flex; }
 .flex-row { flex-direction: row; }
@@ -40,7 +51,7 @@
 
 .main{width: 500px;height: 500px;}
 
-.div-colores{width:30%;height:100%;}
+.div-colores{width:30%;height:50%;}
 .caja-color{width:30px;height: 30px;margin:1px}
 
 .div-formulario{width:70%;height:100%;}
