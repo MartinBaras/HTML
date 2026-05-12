@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Web Components — Guía Docente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Fraunces:ital,wght@0,300;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green:#1D9E75;--green-light:#E1F5EE;--green-mid:#9FE1CB;--green-dark:#0F6E56;
+  --blue:#185FA5;--blue-light:#E6F1FB;--blue-mid:#B5D4F4;
+  --amber:#BA7517;--amber-light:#FAEEDA;--amber-mid:#FAC775;
+  --coral:#993C1D;--coral-light:#FAECE7;--coral-mid:#F5C4B3;
+  --gray:#5F5E5A;--gray-light:#F1EFE8;--gray-mid:#D3D1C7;
+  --text:#1a1a18;--text2:#5F5E5A;--text3:#888780;
+  --bg:#faf9f6;--surface:#ffffff;--border:#e8e6e0;
+  --code-bg:#13131a;--code-text:#e2e0f8;
+  --radius:10px;--radius-lg:14px;
+  --font-display:'Fraunces',Georgia,serif;
+  --font-body:'DM Sans',sans-serif;
+  --font-mono:'DM Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);line-height:1.6;font-size:15px}
+
+/* ── LAYOUT ── */
+.page{max-width:900px;margin:0 auto;padding:2rem 1.5rem 4rem}
+
+/* ── HERO ── */
+.hero{padding:3rem 0 2.5rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--green-dark);background:var(--green-light);padding:4px 12px;border-radius:20px;margin-bottom:1rem}
+.hero h1{font-family:var(--font-display);font-size:clamp(2rem,5vw,3.2rem);font-weight:600;line-height:1.1;margin-bottom:.75rem;color:var(--text)}
+.hero h1 em{font-style:italic;color:var(--green)}
+.hero-sub{font-size:16px;color:var(--text2);max-width:600px;line-height:1.7;margin-bottom:1.5rem}
+.hero-tags{display:flex;gap:8px;flex-wrap:wrap}
+.tag{font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);color:var(--text3);background:var(--surface)}
+
+/* ── NAV ── */
+.nav-sticky{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:.75rem 0;margin:0 -1.5rem;padding-left:1.5rem;padding-right:1.5rem}
+.nav-inner{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.nav-inner::-webkit-scrollbar{display:none}
+.nav-btn{font-size:12px;font-family:var(--font-body);padding:6px 16px;border-radius:20px;border:1px solid transparent;background:transparent;color:var(--text2);cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0}
+.nav-btn:hover{background:var(--gray-light);color:var(--text)}
+.nav-btn.active{background:var(--green-light);color:var(--green-dark);border-color:var(--green-mid);font-weight:500}
+
+/* ── SECTIONS ── */
+.section{display:none;animation:fadeIn .2s ease}
+.section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ── CARDS ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:1.25rem}
+.card+.card{margin-top:0}
+.card-title{display:flex;align-items:center;gap:10px;font-size:17px;font-weight:500;margin-bottom:1rem;color:var(--text)}
+.card p{font-size:14px;line-height:1.75;color:var(--text2);margin-bottom:.75rem}
+.card p:last-child{margin-bottom:0}
+.card ul,ol{font-size:14px;color:var(--text2);padding-left:1.25rem;line-height:1.8}
+.card li{margin-bottom:.15rem}
+
+/* ── ICON CIRCLES ── */
+.ic{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.ic-g{background:var(--green-light);color:var(--green-dark)}
+.ic-b{background:var(--blue-light);color:var(--blue)}
+.ic-a{background:var(--amber-light);color:var(--amber)}
+.ic-c{background:var(--coral-light);color:var(--coral)}
+
+/* ── CODE ── */
+pre{background:var(--code-bg);border-radius:var(--radius);padding:1.25rem;overflow-x:auto;margin:.9rem 0;font-size:12.5px;line-height:1.65;border:1px solid #2a2a3a}
+code{font-family:var(--font-mono);color:var(--code-text)}
+.kw{color:#c792ea}.cl{color:#80cbc4}.fn{color:#82aaff}.st{color:#c3e88d}.cm{color:#546e7a;font-style:italic}.nm{color:#ffcb6b}.at{color:#f07178}.tag-h{color:#f78c6c}.tx{color:#e2e0f8}
+.inline-code{font-family:var(--font-mono);background:var(--gray-light);padding:1px 6px;border-radius:4px;font-size:12.5px;color:var(--text);border:1px solid var(--border)}
+
+/* ── ALERTS ── */
+.alert{padding:.8rem 1rem;border-radius:var(--radius);font-size:13px;line-height:1.65;margin:.9rem 0;display:flex;gap:.6rem;align-items:flex-start}
+.alert-icon{font-size:15px;flex-shrink:0;margin-top:1px}
+.alert.tip{background:var(--green-light);color:var(--green-dark);border:1px solid var(--green-mid)}
+.alert.info{background:var(--blue-light);color:var(--blue);border:1px solid var(--blue-mid)}
+.alert.warn{background:var(--amber-light);color:var(--amber);border:1px solid var(--amber-mid)}
+.alert.danger{background:var(--coral-light);color:var(--coral);border:1px solid var(--coral-mid)}
+.alert strong{font-weight:500}
+
+/* ── PILLARS ── */
+.pillar-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:.9rem 0}
+.pillar{background:var(--bg);border-radius:var(--radius);padding:1rem;border-left:3px solid;border-top:1px solid var(--border);border-right:1px solid var(--border);border-bottom:1px solid var(--border)}
+.pillar.g{border-left-color:var(--green)}
+.pillar.b{border-left-color:var(--blue)}
+.pillar.a{border-left-color:var(--amber)}
+.pillar.r{border-left-color:var(--coral)}
+.pillar h4{font-size:13px;font-weight:500;margin-bottom:.3rem;color:var(--text)}
+.pillar p{font-size:12px;color:var(--text2);line-height:1.55;margin:0}
+
+/* ── COMPARE ── */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:.9rem 0}
+.compare-col{background:var(--bg);border-radius:var(--radius);padding:.9rem;border:1px solid var(--border)}
+.compare-col h4{font-size:12px;font-weight:500;margin-bottom:.5rem;padding-bottom:.4rem;border-bottom:1px solid var(--border);color:var(--text)}
+.compare-col ul{font-size:12px;color:var(--text2);padding-left:1rem;line-height:1.85}
+
+/* ── TABS ── */
+.tab-nav{display:flex;gap:4px;margin-bottom:-1px;position:relative;z-index:1}
+.tab-btn{font-size:12px;font-family:var(--font-body);padding:7px 16px;border:1px solid transparent;border-bottom:none;border-radius:8px 8px 0 0;background:var(--bg);color:var(--text2);cursor:pointer;transition:all .15s}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.on{background:var(--surface);border-color:var(--border);color:var(--text);font-weight:500}
+.tab-pane{display:none;border:1px solid var(--border);border-radius:0 var(--radius) var(--radius) var(--radius);background:var(--surface);padding:1.1rem}
+.tab-pane.on{display:block}
+.tab-pane p{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:.6rem}
+
+/* ── FLOW / LIFECYCLE ── */
+.flow{display:flex;flex-direction:column;margin:.9rem 0}
+.flow-item{display:flex;gap:.9rem;align-items:flex-start}
+.flow-line{display:flex;flex-direction:column;align-items:center;width:24px;flex-shrink:0}
+.flow-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.flow-connector{width:2px;flex:1;background:var(--border);min-height:28px;margin:4px 0}
+.flow-body{flex:1;padding-bottom:1.1rem}
+.flow-body h4{font-size:13.5px;font-weight:500;margin-bottom:.25rem;color:var(--text)}
+.flow-body p{font-size:13px;color:var(--text2);line-height:1.6;margin:0}
+.flow-badge{display:inline-block;font-family:var(--font-mono);font-size:11px;padding:2px 8px;border-radius:20px;margin-left:6px;vertical-align:middle}
+.fb-g{background:var(--green-light);color:var(--green-dark)}
+.fb-b{background:var(--blue-light);color:var(--blue)}
+.fb-a{background:var(--amber-light);color:var(--amber)}
+.fb-c{background:var(--coral-light);color:var(--coral)}
+
+/* ── STEPS ── */
+.steps{margin:.9rem 0}
+.step{display:flex;gap:.8rem;margin-bottom:.9rem;align-items:flex-start}
+.step-num{width:26px;height:26px;border-radius:50%;background:var(--green-light);color:var(--green-dark);font-size:12px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step-body h4{font-size:13.5px;font-weight:500;margin-bottom:.25rem;color:var(--text)}
+.step-body p{font-size:13px;color:var(--text2);line-height:1.6;margin:0}
+
+/* ── SHADOW VISUAL ── */
+.shadow-visual{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:flex-start;margin:.9rem 0}
+.shadow-box{border-radius:var(--radius);padding:.9rem;font-size:12px;font-family:var(--font-mono);line-height:1.6}
+.shadow-dom{background:var(--amber-light);border:1px solid var(--amber-mid);color:#633806}
+.shadow-inner{background:var(--green-light);border:1px solid var(--green-mid);color:#085041;margin-top:.5rem;padding:.4rem .7rem;border-radius:6px;font-size:11px}
+.shadow-sep{color:var(--text3);font-size:18px;padding-top:.9rem;text-align:center}
+
+/* ── DEMO ── */
+.demo-area{background:var(--bg);border-radius:var(--radius);padding:1rem;margin:.9rem 0;border:1px dashed var(--border)}
+.demo-label{font-size:10px;color:var(--text3);margin-bottom:.6rem;text-transform:uppercase;letter-spacing:.07em}
+.alert-preview{padding:.6rem 1rem;border-radius:8px;font-size:13px;margin-bottom:.4rem;display:flex;gap:.5rem;align-items:center}
+
+/* ── QUIZ ── */
+.quiz-q{font-size:14px;font-weight:500;margin-bottom:.8rem;color:var(--text)}
+.quiz-count{font-size:11px;color:var(--text3);font-weight:400;margin-left:4px}
+.quiz-opts{display:flex;flex-direction:column;gap:7px}
+.quiz-opt{font-size:13px;padding:9px 14px;border-radius:var(--radius);border:1px solid var(--border);cursor:pointer;transition:all .15s;background:var(--surface);text-align:left;color:var(--text);font-family:var(--font-body)}
+.quiz-opt:hover{border-color:var(--green-mid);background:var(--green-light)}
+.quiz-opt.correct{background:var(--green-light);border-color:var(--green-mid);color:var(--green-dark)}
+.quiz-opt.wrong{background:var(--coral-light);border-color:var(--coral-mid);color:var(--coral)}
+.quiz-feedback{font-size:13px;margin-top:.7rem;padding:.6rem .9rem;border-radius:var(--radius);line-height:1.6}
+.quiz-score{text-align:center;padding:1.5rem}
+.quiz-score .score-num{font-family:var(--font-display);font-size:3rem;font-weight:600;color:var(--green)}
+.quiz-score .score-label{font-size:14px;color:var(--text2);margin-top:.25rem}
+.quiz-score p{font-size:13px;color:var(--text2);margin-top:.75rem}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-family:var(--font-body);padding:7px 16px;border-radius:var(--radius);border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;transition:all .15s;margin-top:.75rem}
+.btn:hover{background:var(--gray-light)}
+.btn.prim{background:var(--green-light);color:var(--green-dark);border-color:var(--green-mid)}
+.btn.prim:hover{background:var(--green-mid)}
+
+/* ── SECTION HEADER ── */
+.sec-header{margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.sec-header h2{font-family:var(--font-display);font-size:1.6rem;font-weight:600;color:var(--text);margin-bottom:.3rem}
+.sec-header p{font-size:13px;color:var(--text3)}
+
+/* ── FOOTER ── */
+.footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:gap}
+.footer-text{font-size:12px;color:var(--text3)}
+
+@media(max-width:600px){
+  .pillar-grid,.compare,.shadow-visual{grid-template-columns:1fr}
+  .shadow-sep{display:none}
+  .hero h1{font-size:1.9rem}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="hero-eyebrow">⬡ JavaScript Avanzado</div>
+  <h1>Web <em>Components</em></h1>
+  <p class="hero-sub">Guía completa para docentes y estudiantes. Aprende a crear componentes reutilizables nativos del navegador, sin frameworks, usando los estándares modernos de la plataforma web.</p>
+  <div class="hero-tags">
+    <span class="tag">Custom Elements</span>
+    <span class="tag">Shadow DOM</span>
+    <span class="tag">HTML Templates</span>
+    <span class="tag">Lifecycle Callbacks</span>
+    <span class="tag">Vanilla JS</span>
+    <span class="tag">ES6+</span>
+  </div>
+</div>
+
+<!-- ── NAVEGACIÓN ── -->
+<div class="nav-sticky">
+  <div class="nav-inner" id="main-nav">
+    <button class="nav-btn active" onclick="showSection('intro')">Introducción</button>
+    <button class="nav-btn" onclick="showSection('custom')">Custom Elements</button>
+    <button class="nav-btn" onclick="showSection('shadow')">Shadow DOM</button>
+    <button class="nav-btn" onclick="showSection('templates')">Templates &amp; Slots</button>
+    <button class="nav-btn" onclick="showSection('lifecycle')">Ciclo de vida</button>
+    <button class="nav-btn" onclick="showSection('practica')">Ejemplo completo</button>
+    <button class="nav-btn" onclick="showSection('quiz')">Quiz</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SECCIÓN 1: INTRODUCCIÓN
+══════════════════════════════════════ -->
+<div class="section active" id="sec-intro">
+<div class="sec-header">
+  <h2>Introducción</h2>
+  <p>¿Qué son, para qué sirven y por qué aprenderlos?</p>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ic ic-g">🧩</span> ¿Qué son los Web Components?</div>
+  <p>Los <strong>Web Components</strong> son un conjunto de APIs nativas del navegador que permiten crear <em>elementos HTML personalizados</em>, encapsulados y completamente reutilizables, usando solo JavaScript vanilla, sin necesitar ningún framework externo (ni React, ni Vue, ni Angular).</p>
+  <p>La idea central es simple pero poderosa: así como el navegador tiene sus propias etiquetas como <span class="inline-code">&lt;input&gt;</span>, <span class="inline-code">&lt;video&gt;</span> o <span class="inline-code">&lt;details&gt;</span>, con los Web Components <strong>vos podés crear las tuyas propias</strong>: <span class="inline-code">&lt;mi-boton&gt;</span>, <span class="inline-code">&lt;tarjeta-usuario&gt;</span>, <span class="inline-code">&lt;modal-confirmacion&gt;</span>.</p>
+  <div class="alert tip">
+    <div class="alert-icon">💡</div>
+    <div><strong>Analogía didáctica:</strong> Pensá en los Web Components como "piezas de LEGO personalizadas". Cada pieza tiene su propia lógica interna, se puede usar en cualquier proyecto y no interfiere con las demás piezas. Una vez definida, la usás como cualquier etiqueta HTML.</div>
+  </div>
+  <p>Son un <strong>estándar del W3C</strong>, lo que significa que todos los navegadores modernos los soportan de forma nativa, sin polyfills ni dependencias adicionales.</p>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ic ic-b">🏛️</span> Los 3 pilares fundamentales</div>
+  <p>Los Web Components se construyen sobre tres tecnologías del navegador que trabajan juntas:</p>
+  <div class="pillar-grid">
+    <div class="pillar g">
+      <h4>1. Custom Elements</h4>
+      <p>Define nuevas etiquetas HTML con comportamiento propio. Extendés la clase <span class="inline-code">HTMLElement</span> y registrás tu elemento con un nombre personalizado.</p>
+    </div>
+    <div class="pillar b">
+      <h4>2. Shadow DOM</h4>
+      <p>Encapsula el HTML y CSS interno del componente, creando un árbol DOM aislado que no es afectado por los estilos globales de la página.</p>
+    </div>
+    <div class="pillar a">
+      <h4>3. HTML Templates</h4>
+      <p>Define fragmentos HTML reutilizables que <em>no se renderizan</em> hasta que se necesitan. Son el "molde" o "esqueleto" del componente.</p>
+    </div>
+    <div class="pillar r">
+      <h4>4. ES Modules (bonus)</h4>
+      <p>Importa y exporta componentes entre archivos usando el sistema de módulos nativo del navegador. Permite organizar el código en archivos separados.</p>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ic ic-a">⚖️</span> ¿Por qué aprenderlos? Ventajas y limitaciones</div>
+  <div class="compare">
+    <div class="compare-col">
+      <h4 style="color:var(--green-dark)">✓ Por qué sí usarlos</h4>
+      <ul>
+        <li>Nativo del navegador, sin instalar nada</li>
+        <li>Sin dependencias externas que actualizar</li>
+        <li>Encapsulación CSS real con Shadow DOM</li>
+        <li>Reutilizable en <strong>cualquier</strong> framework</li>
+        <li>Estándar web oficializado (W3C)</li>
+        <li>Largo soporte garantizado en el futuro</li>
+        <li>Tamaño de bundle: cero kilobytes extra</li>
+      </ul>
+    </div>
+    <div class="compare-col">
+      <h4 style="color:var(--coral)">✗ Limitaciones a conocer</h4>
+      <ul>
+        <li>Más verboso que React/Vue/Svelte</li>
+        <li>No tiene Virtual DOM ni reactividad</li>
+        <li>Ecosistema de herramientas más pequeño</li>
+        <li>Sin hot module reload nativo</li>
+        <li>Server-side rendering es más complejo</li>
+        <li>La curva inicial es más empinada</li>
+      </ul>
+    </div>
+  </div>
+  <div class="alert info">
+    <div class="alert-icon">ℹ️</div>
+    <div><strong>¿Reemplazan a React o Vue?</strong> No necesariamente. Los Web Components son excelentes para crear <em>librerías de componentes</em> agnósticas al framework, o para proyectos sin build process. React/Vue son mejores para aplicaciones complejas con estado global y ecosistema rico.</div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SECCIÓN 2: CUSTOM ELEMENTS
+══════════════════════════════════════ -->
+<div class="section" id="sec-custom">
+<div class="sec-header">
+  <h2>Custom Elements</h2>
+  <p>Cómo definir y registrar tus propias etiquetas HTML</p>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ic ic-g">🏷️</span> Definiendo un Custom Element</div>
+  <p>Un Custom Element se crea en dos pasos: <strong>(1)</strong> definir una clase JavaScript que extiende <span class="inline-code">HTMLElement</span>, y <strong>(2)</strong> registrarla con <span class="inline-code">customElements.define()</span>.</p>
+
+  <div class="alert warn">
+    <div class="alert-icon">⚠️</div>
+    <div><strong>Regla obligatoria:</strong> El nombre siempre debe contener <strong>al menos un guion</strong> (ej: <span class="inline-code">mi-boton</span>, <span class="inline-code">app-header</span>). Esto es una especificación del estándar para evitar colisiones con etiquetas HTML nativas actuales o futuras. <span class="inline-code">miboton</span> es inválido.</div>
+  </div>
+
+  <div class="tab-nav">
+    <button class="tab-btn on" onclick="switchTab(this,'t1','paso1')">Paso 1: La clase</button>
+    <button class="tab-btn" onclick="switchTab(this,'t1','paso2')">Paso 2: Registrar</button>
+    <button class="tab-btn" onclick="switchTab(this,'t1','paso3')">Paso 3: Usar en HTML</button>
+  </div>
+  <div class="tab-pane on" id="t1-paso1">
+    <p>Creamos una clase que hereda de <span class="inline-code">HTMLElement</span>. El constructor se llama cuando el elemento es creado.</p>
+<pre><code><span class="cm">// Toda clase de Web Component debe extender HTMLElement</span>
+<span class="kw">class</span> <span class="cl">MiBoton</span> <span class="kw">extends</span> <span class="cl">HTMLElement</span> {
+
+  <span class="fn">constructor</span>() {
+    <span class="kw">super</span>(); <span class="cm">// ← SIEMPRE llamar a super() como primera línea</span>
+    
+    <span class="cm">// Aquí configuramos el contenido inicial del componente</span>
+    <span class="kw">this</span>.innerHTML = <span class="st">'&lt;button&gt;¡Soy un botón personalizado!&lt;/button&gt;'</span>;
+  }
+}</code></pre>
+    <div class="alert tip">
+      <div class="alert-icon">💡</div>
+      <div><strong>¿Por qué super()?</strong> Al extender una clase, <span class="inline-code">super()</span> llama al constructor padre (HTMLElement). Sin esta llamada, <span class="inline-code">this</span> no estaría disponible y obtendríamos un error. Es como decirle al navegador "primero inicializame como un elemento HTML normal, y luego agrego mi lógica extra".</div>
+    </div>
+  </div>
+  <div class="tab-pane" id="t1-paso2">
+    <p>Una vez definida la clase, la registramos para que el navegador sepa qué clase usar cuando encuentre esa etiqueta.</p>
+<pre><code><span class="cm">// customElements.define( nombre-etiqueta, clase )</span>
+<span class="nm">customElements</span>.<span class="fn">define</span>(
+  <span class="st">'mi-boton'</span>,  <span class="cm">// nombre de la etiqueta (con guion, en minúsculas)</span>
+  <span class="cl">MiBoton</span>      <span class="cm">// la clase que define su comportamiento</span>
+);
+
+<span class="cm">// A partir de este momento, el navegador reconoce &lt;mi-boton&gt;</span>
+<span class="cm">// También podemos verificar si ya fue registrado:</span>
+<span class="nm">console</span>.<span class="fn">log</span>(<span class="nm">customElements</span>.<span class="fn">get</span>(<span class="st">'mi-boton'</span>)); <span class="cm">// → class MiBoton</span></code></pre>
+    <div class="alert warn">
+      <div class="alert-icon">⚠️</div>
+      <div><strong>Un nombre, una vez:</strong> Intentar registrar el mismo nombre dos veces lanza un error. Si cargás el archivo dos veces (por ejemplo en desarrollo), usá <span class="inline-code">if (!customElements.get('mi-boton'))</span> antes de registrar.</div>
+    </div>
+  </div>
+  <div class="tab-pane" id="t1-paso3">
+    <p>Una vez registrado, lo usamos como cualquier etiqueta HTML en nuestros archivos:</p>
+<pre><code><span class="cm">&lt;!-- En el HTML, usarlo es idéntico a cualquier etiqueta nativa --&gt;</span>
+<span class="tag-h">&lt;mi-boton&gt;&lt;/mi-boton&gt;</span>
+<span class="tag-h">&lt;mi-boton&gt;&lt;/mi-boton&gt;</span>
+<span class="tag-h">&lt;mi-boton&gt;&lt;/mi-boton&gt;</span>
+
+<span class="cm">&lt;!-- O crearlo dinámicamente desde JavaScript --&gt;</span>
+<span class="kw">const</span> <span class="nm">boton</span> = <span class="nm">document</span>.<span class="fn">createElement</span>(<span class="st">'mi-boton'</span>);
+<span class="nm">document</span>.<span class="nm">body</span>.<span class="fn">appendChild</span>(<span class="nm">boton</span>);
+
+<span class="cm">&lt;!-- El script del componente debe cargarse antes (o en el mismo archivo) --&gt;</span>
+<span class="tag-h">&lt;script</span> <span class="at">src</span>=<span class="st">"mi-boton.js"</span> <span class="at">type</span>=<span class="st">"module"</span><span class="tag-h">&gt;&lt;/script&gt;</span></code></pre>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ic ic-b">🎛️</span> Trabajando con atributos</div>
+  <p>Los componentes pueden recibir datos desde el HTML a través de <strong>atributos</strong>, exactamente igual que un <span class="inline-code">&lt;input type="text" placeholder="..."&gt;</span> usa atributos para configurarse.</p>
+<pre><code><span class="kw">class</span> <span class="cl">TarjetaUsuario</span> <span class="kw">extends</span> <span class="cl">HTMLElement</span> {
+
+  <span class="fn">connectedCallback</span>() {
+    <span class="cm">// getAttribute() lee el valor de un atributo HTML</span>
+    <span class="kw">const</span> <span class="nm">nombre</span> = <span class="kw">this</span>.<span class="fn">getAttribute</span>(<span class="st">'nombre'</span>) || <span class="st">'Usuario'</span>;
+    <span class="kw">const</span> <span class="nm">rol</span>    = <span class="kw">this</span>.<span class="fn">getAttribute</span>(<span class="st">'rol'</span>)    || <span class="st">'Sin rol'</span>;
+    <span class="kw">const</span> <span class="nm">avatar</span> = <span class="kw">this</span>.<span class="fn">getAttribute</span>(<span class="st">'avatar'</span>) || <span class="st">'👤'</span>;
+
+    <span class="kw">this</span>.innerHTML = <span class="st">`
+      &lt;div style="display:flex; gap:.75rem; align-items:center;
+                  padding:1rem; border:1px solid #ddd; border-radius:10px;"&gt;
+        &lt;span style="font-size:2rem;"&gt;</span><span class="nm">${avatar}</span><span class="st">&lt;/span&gt;
+        &lt;div&gt;
+          &lt;strong&gt;</span><span class="nm">${nombre}</span><span class="st">&lt;/strong&gt;
+          &lt;p style="color:#888; font-size:.85em; margin:0;"&gt;</span><span class="nm">${rol}</span><span class="st">&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    `</span>;
+  }
+}
+
+<span class="nm">customElements</span>.<span class="fn">define</span>(<span class="st">'tarjeta-usuario'</span>, <span class="cl">TarjetaUsuario</span>);
+
+<span class="cm">&lt;!-- Los atributos se pasan directamente en el HTML --&gt;</span>
+<span class="tag-h">&lt;tarjeta-usuario</span> <span class="at">nombre</span>=<span class="st">"Ana García"</span> <span class="at">rol</span>=<span class="st">"Docente"</span> <span class="at">avatar</span>=<span class="st">"👩‍🏫"</span><span class="tag-h">&gt;&lt;/tarjeta-usuario&gt;</span>
+<span class="tag-h">&lt;tarjeta-usuario</span> <span class="at">nombre</span>=<span class="st">"Carlos López"</span> <span class="at">rol</span>=<span class="st">"Estudiante"</span> <span class="at">avatar</span>=<span class="st">"👨‍💻"</span><span class="tag-h">&gt;&lt;/tarjeta-usuario&gt;</span></code></pre>
+  <div class="alert tip">
+    <div class="alert-icon">💡</div>
+    <div><strong>Atributos vs Propiedades:</strong> Los atributos son strings en el HTML (<span class="inline-code">getAttribute()</span>). Las propiedades son valores JavaScript (<span class="inline-code">element.nombre</span>). Para datos complejos (objetos, arrays) conviene usar propiedades JS; para datos simples (texto, números, booleans) usan atributos HTML.</div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SECCIÓN 3: SHADOW DOM
+══════════════════════════════════════ -->
+<div class="section" id="sec-shadow">
+<div class="sec-header">
+  <h2>Shadow DOM</h2>
+  <p>Encapsulación real: CSS que no se "escapa" ni "se contamina"</p>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ic ic-b">🔒</span> El problema que resuelve el Shadow DOM</div>
+  <p>Uno de los mayores dolores de cabeza en CSS es el alcance global. Si definís <span class="inline-code">p { color: red; }</span> en tu hoja de estilos, <em>todos</em> los párrafos de la página se vuelven rojos, incluyendo los que están dentro de tus componentes.</p>
+  <p>El Shadow DOM resuelve esto creando un <strong>árbol DOM separado y aislado</strong> dentro del elemento. El CSS del exterior no entra; el CSS del interior no sale.</p>
+
+  <div class="shadow-visual">
+    <div class="shadow-box shadow-dom">
+      <div style="font-weight:500;margin-bottom:.4rem">DOM Principal (Light DOM)</div>
+      <div>&lt;body&gt;</div>
+      <div style="padding-left:.75rem">&lt;h1&gt;Mi página&lt;/h1&gt;</div>
+      <div style="padding-left:.75rem">&lt;mi-widget&gt;</div>
+      <div style="padding-left:1.5rem;opacity:.6;font-size:11px">⬆ Tu acceso termina aquí</div>
+      <div style="padding-left:.75rem">&lt;/mi-widget&gt;</div>
+      <div>&lt;/body&gt;</div>
+    </div>
+    <div class="shadow-sep">→</div>
+    <div class="shadow-box" style="background:var(--blue-light);border:1px solid var(--blue-mid);color:#0C447C">
+      <div style="font-weight:500;margin-bottom:.4rem">Shadow Tree (aislado)</div>
+      <div class="shadow-inner" style="background:var(--green-light);border-color:var(--green-mid);color:#085041">
+        <div>&lt;style&gt; ← solo aplica aquí</div>
+        <div>&lt;button&gt;Interno&lt;/button&gt;</div>
+        <div>&lt;span class="dato"&gt;42&lt;/span&gt;</div>
+      </div>
+      <div style="font-size:10px;margin-top:.4rem;opacity:.7">No afectado por CSS externo</div>
+    </div>
+  </div>
+
+  <div class="alert info">
+    <div class="alert-icon">ℹ️</div>
+    <div><strong>Ya lo usás sin saberlo:</strong> Las etiquetas <span class="inline-code">&lt;video&gt;</span>, <span class="inline-code">&lt;input type="range"&gt;</span>, <span class="inline-code">&lt;details&gt;</span> y <span class="inline-code">&lt;input type="date"&gt;</span> usan Shadow DOM internamente para renderizar sus controles. En DevTools podés activar "Show user agent shadow DOM" para verlo.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ic ic-g">💻</span> Cómo usar attachShadow()</div>
+  <p>Para activar el Shadow DOM en un componente, llamamos a <span class="inline-code">this.attachShadow()</span> en el constructor. Esto retorna el <strong>Shadow Root</strong>, que es el nodo raíz del árbol aislado.</p>
+<pre><code><span class="kw">class</span> <span class="cl">PanelAislado</span> <span class="kw">extends</span> <span class="cl">HTMLElement</span> {
+  <span class="fn">constructor</span>() {
+    <span class="kw">super</span>();
+
+    <span class="cm">// attachShadow crea y retorna el Shadow Root</span>
+    <span class="cm">// mode 'open':   element.shadowRoot → devuelve el Shadow Root (accesible)</span>
+    <span class="cm">// mode 'closed': element.shadowRoot → devuelve null   (completamente privado)</span>
+    <span class="kw">const</span> <span class="nm">shadow</span> = <span class="kw">this</span>.<span class="fn">attachShadow</span>({ <span class="nm">mode</span>: <span class="st">'open'</span> });
+
+    <span class="cm">// Todo lo que agreguemos al shadow root vive en el Shadow DOM</span>
+    <span class="nm">shadow</span>.innerHTML = <span class="st">`
+      &lt;style&gt;
+        /* Este CSS SOLO aplica dentro de este componente.
+           Si la página tiene p { color: red }, este p NO se ve afectado. */
+        p {
+          color: teal;
+          font-weight: bold;
+          padding: 1rem;
+          background: #f0fff4;
+          border-radius: 8px;
+        }
+        :host {
+          /* :host selecciona el elemento &lt;panel-aislado&gt; en sí mismo */
+          display: block;
+          border: 2px solid teal;
+          border-radius: 10px;
+        }
+      &lt;/style&gt;
+
+      &lt;p&gt;
+        Soy un párrafo dentro del Shadow DOM.
+        El CSS externo no puede cambiar mi apariencia.
+      &lt;/p&gt;
+    `</span>;
+  }
+}
+
+<span class="nm">customElements</span>.<span class="fn">define</span>(<span class="st">'panel-aislado'</span>, <span class="cl">PanelAislado</span>);</code></pre>
+
+  <div class="alert tip">
+    <div class="alert-icon">💡</div>
+    <div><strong>El selector <span class="inline-code">:host</span>:</strong> Dentro del Shadow DOM, <span class="inline-code">:host</span> selecciona el propio elemento custom (el "dueño" del shadow). Es el equivalente a seleccionar <span class="inline-code">panel-aislado</span> desde el exterior, pero desde adentro del componente. Sirve para definir el display, bordes, márgenes del elemento contenedor.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ic ic-a">🎨</span> CSS personalizable con propiedades CSS</div>
+  <p>Aunque el Shadow DOM aísla los estilos, podemos crear "puntos de personalización" usando <strong>Custom Properties (variables CSS)</strong>. Las variables CSS atraviesan la barrera del Shadow DOM.</p>
+<pre><code><span class="cm">/* Dentro del componente: usamos la variable con un fallback */</span>
+<span class="kw">:host</span> {
+  <span class="at">background</span>: <span class="fn">var</span>(<span class="nm">--mi-boton-bg</span>, <span class="st">#1D9E75</span>);  <span class="cm">/* fallback: verde */</span>
+  <span class="at">color</span>:       <span class="fn">var</span>(<span class="nm">--mi-boton-color</span>, <span class="st">white</span>);
+}
+
+<span class="cm">/* Desde el exterior, el usuario personaliza el componente */</span>
+<span class="nm">mi-boton</span> {
+  <span class="at">--mi-boton-bg</span>:    <span class="st">#185FA5</span>;  <span class="cm">/* override: azul */</span>
+  <span class="at">--mi-boton-color</span>: <span class="st">white</span>;
+}</code></pre>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SECCIÓN 4: TEMPLATES & SLOTS
+══════════════════════════════════════ -->
+<div class="section" id="sec-templates">
+<div class="sec-header">
+  <h2>HTML Templates &amp; Slots</h2>
+  <p>Moldes reutilizables y puntos de inserción de contenido</p>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ic ic-a">📋</span> ¿Qué es el elemento &lt;template&gt;?</div>
+  <p>La etiqueta <span class="inline-code">&lt;template&gt;</span> define HTML que <strong>no se renderiza</strong> cuando la página carga. El navegador lo parsea y lo tiene disponible en memoria, pero no lo muestra ni ejecuta ningún script o carga ninguna imagen que contenga.</p>
+  <p>Se "activa" solo cuando lo clonamos explícitamente con JavaScript usando <span class="inline-code">cloneNode(true)</span>.</p>
+
+  <div class="alert info">
+    <div class="alert-icon">ℹ️</div>
+    <div><strong>Ventaja de rendimiento:</strong> Clonar un nodo ya parseado es mucho más rápido que parsear HTML desde un string (<span class="inline-code">innerHTML</span>) repetidamente. Cuando un componente se usa muchas veces, los templates marcan diferencia.</div>
+  </div>
+<pre><code><span class="cm">&lt;!-- 1. Definimos el template en el HTML (se puede poner en el &lt;head&gt; o &lt;body&gt;) --&gt;</span>
+<span class="tag-h">&lt;template</span> <span class="at">id</span>=<span class="st">"tpl-tarjeta"</span><span class="tag-h">&gt;</span>
+  <span class="tag-h">&lt;style&gt;</span>
+    .tarjeta {
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 1.25rem;
+      font-family: sans-serif;
+    }
+    .tarjeta h3 { color: #1D9E75; margin-bottom: .5rem; }
+    .tarjeta p  { color: #666; font-size: .9em; }
+  <span class="tag-h">&lt;/style&gt;</span>
+  <span class="tag-h">&lt;div</span> <span class="at">class</span>=<span class="st">"tarjeta"</span><span class="tag-h">&gt;</span>
+    <span class="tag-h">&lt;h3&gt;</span>Título de la tarjeta<span class="tag-h">&lt;/h3&gt;</span>
+    <span class="tag-h">&lt;p&gt;</span>Descripción de la tarjeta.<span class="tag-h">&lt;/p&gt;</span>
+  <span class="tag-h">&lt;/div&gt;</span>
+<span class="tag-h">&lt;/template&gt;</span>
+
+<span class="cm">// 2. En el componente, clonamos el template</span>
+<span class="kw">class</span> <span class="cl">TarjetaInfo</span> <span class="kw">extends</span> <span class="cl">HTMLElement</span> {
+  <span class="fn">connectedCallback</span>() {
+    <span class="kw">const</span> <span class="nm">shadow</span>    = <span class="kw">this</span>.<span class="fn">attachShadow</span>({ <span class="nm">mode</span>: <span class="st">'open'</span> });
+    <span class="kw">const</span> <span class="nm">template</span>  = <span class="nm">document</span>.<span class="fn">getElementById</span>(<span class="st">'tpl-tarjeta'</span>);
+
+    <span class="cm">// cloneNode(true) → copia profunda: incluye todos los elementos hijos</span>
+    <span class="cm">// cloneNode(false) → copia superficial: solo el nodo raíz, sin hijos</span>
+    <span class="nm">shadow</span>.<span class="fn">appendChild</span>(<span class="nm">template</span>.<span class="nm">content</span>.<span class="fn">cloneNode</span>(<span class="kw">true</span>));
+  }
+}</code></pre>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ic ic-g">🔌</span> Slots: puntos de inserción de contenido</div>
+  <p>Los <span class="inline-code">&lt;slot&gt;</span> son "agujeros" en el template donde quien usa el componente puede insertar su propio HTML. Son análogos al concepto de "children" en React o "slots" en Vue, y tienen el mismo nombre por razón.</p>
+  <p>Hay dos tipos:</p>
+  <ul>
+    <li><strong>Slot por defecto</strong> (<span class="inline-code">&lt;slot&gt;</span>): recibe todo el contenido que no tenga un <span class="inline-code">slot="nombre"</span></li>
+    <li><strong>Slot nombrado</strong> (<span class="inline-code">&lt;slot name="titulo"&gt;</span>): recibe solo el contenido con <span class="inline-code">slot="titulo"</span></li>
+  </ul>
+<pre><code><span class="cm">&lt;!-- Template con slots nombrados --&gt;</span>
+<span class="tag-h">&lt;template</span> <span class="at">id</span>=<span class="st">"tpl-articulo"</span><span class="tag-h">&gt;</span>
+  <span class="tag-h">&lt;style&gt;</span>
+    article { border: 1px solid #eee; border-radius: 10px; overflow: hidden; }
+    header  { background: #1D9E75; color: white; padding: 1rem; }
+    .cuerpo { padding: 1rem; }
+    footer  { background: #f5f5f5; padding: .75rem 1rem; font-size: .85em; color: #888; }
+  <span class="tag-h">&lt;/style&gt;</span>
+  <span class="tag-h">&lt;article&gt;</span>
+    <span class="tag-h">&lt;header&gt;</span>
+      <span class="tag-h">&lt;slot</span> <span class="at">name</span>=<span class="st">"titulo"</span><span class="tag-h">&gt;</span>Sin título<span class="tag-h">&lt;/slot&gt;</span>  <span class="cm">&lt;!-- slot nombrado --&gt;</span>
+    <span class="tag-h">&lt;/header&gt;</span>
+    <span class="tag-h">&lt;div</span> <span class="at">class</span>=<span class="st">"cuerpo"</span><span class="tag-h">&gt;</span>
+      <span class="tag-h">&lt;slot&gt;&lt;/slot&gt;</span>                     <span class="cm">&lt;!-- slot por defecto --&gt;</span>
+    <span class="tag-h">&lt;/div&gt;</span>
+    <span class="tag-h">&lt;footer&gt;</span>
+      <span class="tag-h">&lt;slot</span> <span class="at">name</span>=<span class="st">"pie"</span><span class="tag-h">&gt;</span>Sin fecha<span class="tag-h">&lt;/slot&gt;</span>    <span class="cm">&lt;!-- slot nombrado --&gt;</span>
+    <span class="tag-h">&lt;/footer&gt;</span>
+  <span class="tag-h">&lt;/article&gt;</span>
+<span class="tag-h">&lt;/template&gt;</span>
+
+<span class="cm">&lt;!-- Uso: el atributo slot="nombre" conecta el contenido con su slot --&gt;</span>
+<span class="tag-h">&lt;articulo-card&gt;</span>
+  <span class="tag-h">&lt;span</span> <span class="at">slot</span>=<span class="st">"titulo"</span><span class="tag-h">&gt;</span>Introducción a Web Components<span class="tag-h">&lt;/span&gt;</span>
+  <span class="tag-h">&lt;p&gt;</span>Este es el contenido del artículo que va en el slot por defecto.<span class="tag-h">&lt;/p&gt;</span>
+  <span class="tag-h">&lt;span</span> <span class="at">slot</span>=<span class="st">"pie"</span><span class="tag-h">&gt;</span>Publicado: 11 de Mayo, 2026<span class="tag-h">&lt;/span&gt;</span>
+<span class="tag-h">&lt;/articulo-card&gt;</span></code></pre>
+
+  <div class="alert tip">
+    <div class="alert-icon">💡</div>
+    <div><strong>El contenido de los slots vive en el Light DOM:</strong> Lo que el usuario pone en un slot sigue siendo parte del DOM normal (accesible con <span class="inline-code">querySelector</span>), no del Shadow DOM. El Shadow DOM solo decide <em>dónde</em> mostrarlo visualmente.</div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SECCIÓN 5: LIFECYCLE
+══════════════════════════════════════ -->
+<div class="section" id="sec-lifecycle">
+<div class="sec-header">
+  <h2>Ciclo de vida</h2>
+  <p>Los 4 callbacks que el navegador llama automáticamente</p>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ic ic-c">🔄</span> Lifecycle Callbacks</div>
+  <p>Los Custom Elements tienen métodos especiales que el navegador invoca automáticamente en distintos momentos de la "vida" del elemento. Son similares a los lifecycle hooks de React (<span class="inline-code">componentDidMount</span>, <span class="inline-code">componentWillUnmount</span>) o Vue (<span class="inline-code">mounted</span>, <span class="inline-code">unmounted</span>), pero son el estándar nativo.</p>
+
+  <div class="flow">
+    <div class="flow-item">
+      <div class="flow-line">
+        <div class="flow-dot" style="background:var(--green)"></div>
+        <div class="flow-connector"></div>
+      </div>
+      <div class="flow-body">
+        <h4>constructor() <span class="flow-badge fb-g">Creación</span></h4>
+        <p>Se llama cuando el elemento es <strong>creado</strong> (ya sea por el parser HTML o por <span class="inline-code">document.createElement()</span>). Siempre debe llamar a <span class="inline-code">super()</span> primero. Usalo para inicializar el Shadow DOM y el estado interno. <em>No leas atributos aquí</em>, porque el elemento aún no está en el DOM y pueden no estar disponibles.</p>
+      </div>
+    </div>
+    <div class="flow-item">
+      <div class="flow-line">
+        <div class="flow-dot" style="background:var(--blue)"></div>
+        <div class="flow-connector"></div>
+      </div>
+      <div class="flow-body">
+        <h4>connectedCallback() <span class="flow-badge fb-b">Insertado en DOM</span></h4>
+        <p>Se llama cada vez que el elemento es <strong>insertado en el documento</strong>. Aquí ya tenés acceso a los atributos. Ideal para: leer atributos y renderizar, hacer fetch de datos, suscribirse a eventos externos, iniciar timers. Puede llamarse múltiples veces si el elemento se mueve entre nodos.</p>
+      </div>
+    </div>
+    <div class="flow-item">
+      <div class="flow-line">
+        <div class="flow-dot" style="background:var(--amber)"></div>
+        <div class="flow-connector"></div>
+      </div>
+      <div class="flow-body">
+        <h4>attributeChangedCallback(nombre, anterior, nuevo) <span class="flow-badge fb-a">Atributo cambia</span></h4>
+        <p>Se llama cuando un <strong>atributo observado cambia</strong> su valor. Solo se dispara para los atributos declarados en el getter estático <span class="inline-code">observedAttributes</span>. Los tres parámetros son: el nombre del atributo, el valor anterior y el nuevo valor.</p>
+      </div>
+    </div>
+    <div class="flow-item">
+      <div class="flow-line">
+        <div class="flow-dot" style="background:var(--coral)"></div>
+      </div>
+      <div class="flow-body">
+        <h4>disconnectedCallback() <span class="flow-badge fb-c">Removido del DOM</span></h4>
+        <p>Se llama cuando el elemento es <strong>removido del documento</strong>. Usalo para limpiar: cancelar subscripciones a eventos, limpiar timers (<span class="inline-code">clearInterval</span>), cancelar peticiones en curso. <em>Importante para evitar memory leaks.</em></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ic ic-g">💻</span> Todos los callbacks en acción</div>
+<pre><code><span class="kw">class</span> <span class="cl">ContadorReactivo</span> <span class="kw">extends</span> <span class="cl">HTMLElement</span> {
+
+  <span class="cm">// ① Declaramos qué atributos queremos que disparen attributeChangedCallback</span>
+  <span class="cm">// Sin esto, los cambios de atributos son ignorados</span>
+  <span class="kw">static get</span> <span class="fn">observedAttributes</span>() {
+    <span class="kw">return</span> [<span class="st">'valor'</span>, <span class="st">'color'</span>];
+  }
+
+  <span class="cm">// ② constructor: inicialización, Shadow DOM</span>
+  <span class="fn">constructor</span>() {
+    <span class="kw">super</span>();
+    <span class="kw">this</span>._shadow = <span class="kw">this</span>.<span class="fn">attachShadow</span>({ <span class="nm">mode</span>: <span class="st">'open'</span> });
+    <span class="kw">this</span>._shadow.innerHTML = <span class="st">'&lt;span style="font-size:2rem;"&gt;0&lt;/span&gt;'</span>;
+    <span class="nm">console</span>.<span class="fn">log</span>(<span class="st">'🔨 constructor: elemento creado'</span>);
+  }
+
+  <span class="cm">// ③ connectedCallback: elemento en el DOM, ya podemos leer atributos</span>
+  <span class="fn">connectedCallback</span>() {
+    <span class="nm">console</span>.<span class="fn">log</span>(<span class="st">'✅ connectedCallback: insertado en el DOM'</span>);
+    <span class="kw">this</span>.<span class="fn">_render</span>(); <span class="cm">// Renderizamos con los atributos actuales</span>
+  }
+
+  <span class="cm">// ④ attributeChangedCallback: un atributo observado cambió</span>
+  <span class="fn">attributeChangedCallback</span>(<span class="nm">nombre</span>, <span class="nm">anterior</span>, <span class="nm">nuevo</span>) {
+    <span class="nm">console</span>.<span class="fn">log</span>(<span class="st">`🔄 attributeChangedCallback: "${nombre}" cambió de "${anterior}" a "${nuevo}"`</span>);
+    <span class="kw">this</span>.<span class="fn">_render</span>(); <span class="cm">// Volvemos a renderizar con el nuevo valor</span>
+  }
+
+  <span class="cm">// ⑤ disconnectedCallback: limpiamos recursos</span>
+  <span class="fn">disconnectedCallback</span>() {
+    <span class="nm">console</span>.<span class="fn">log</span>(<span class="st">'❌ disconnectedCallback: removido del DOM'</span>);
+    <span class="cm">// Aquí limpiaríamos timers, event listeners, etc.</span>
+  }
+
+  <span class="cm">// Método privado de renderizado (convención: prefijo _)</span>
+  <span class="fn">_render</span>() {
+    <span class="kw">const</span> <span class="nm">valor</span> = <span class="kw">this</span>.<span class="fn">getAttribute</span>(<span class="st">'valor'</span>) || <span class="st">'0'</span>;
+    <span class="kw">const</span> <span class="nm">color</span> = <span class="kw">this</span>.<span class="fn">getAttribute</span>(<span class="st">'color'</span>) || <span class="st">'teal'</span>;
+    <span class="kw">const</span> <span class="nm">span</span>  = <span class="kw">this</span>._shadow.<span class="fn">querySelector</span>(<span class="st">'span'</span>);
+    <span class="nm">span</span>.<span class="nm">textContent</span>          = <span class="nm">valor</span>;
+    <span class="nm">span</span>.<span class="nm">style</span>.<span class="nm">color</span>          = <span class="nm">color</span>;
+  }
+}
+
+<span class="nm">customElements</span>.<span class="fn">define</span>(<span class="st">'contador-reactivo'</span>, <span class="cl">ContadorReactivo</span>);
+
+<span class="cm">&lt;!-- Uso: --&gt;</span>
+<span class="tag-h">&lt;contador-reactivo</span> <span class="at">valor</span>=<span class="st">"42"</span> <span class="at">color</span>=<span class="st">"#1D9E75"</span><span class="tag-h">&gt;&lt;/contador-reactivo&gt;</span>
+
+<span class="cm">// Cambiar el atributo dispara attributeChangedCallback automáticamente</span>
+<span class="nm">document</span>.<span class="fn">querySelector</span>(<span class="st">'contador-reactivo'</span>).<span class="fn">setAttribute</span>(<span class="st">'valor'</span>, <span class="st">'100'</span>);</code></pre>
+
+  <div class="alert warn">
+    <div class="alert-icon">⚠️</div>
+    <div><strong>Orden de ejecución importante:</strong> Cuando el HTML se parsea, el orden es: <span class="inline-code">constructor</span> → <span class="inline-code">attributeChangedCallback</span> (por cada atributo en el HTML) → <span class="inline-code">connectedCallback</span>. Por eso, si leés atributos en <span class="inline-code">connectedCallback</span>, ya tendrán sus valores finales.</div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SECCIÓN 6: EJEMPLO COMPLETO
+══════════════════════════════════════ -->
+<div class="section" id="sec-practica">
+<div class="sec-header">
+  <h2>Ejemplo completo</h2>
+  <p>Construimos un componente de alerta desde cero, paso a paso</p>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ic ic-g">🔨</span> Objetivo: &lt;alerta-mensaje&gt;</div>
+  <p>Vamos a construir un componente que muestre mensajes de alerta con diferentes tipos (éxito, error, aviso, información). Combinará todo lo aprendido: Custom Elements, Shadow DOM, Templates y Slots.</p>
+
+  <div class="demo-area">
+    <div class="demo-label">Vista previa del resultado final</div>
+    <div class="alert-preview" style="background:#d4edda;color:#155724">✅ ¡Registro completado con éxito!</div>
+    <div class="alert-preview" style="background:#f8d7da;color:#721c24">❌ Error: el servidor no responde.</div>
+    <div class="alert-preview" style="background:#d1ecf1;color:#0c5460">ℹ️ Hay una nueva versión disponible.</div>
+    <div class="alert-preview" style="background:#fff3cd;color:#856404">⚠️ Tu sesión expirará en 5 minutos.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ic ic-b">📝</span> Implementación completa</div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h4>Crear el template con slots y estilos</h4>
+        <p>Definimos el esqueleto visual con los slots y el CSS de cada tipo de alerta.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h4>Adjuntar el Shadow DOM y clonar el template</h4>
+        <p>En el constructor, creamos el árbol aislado y lo populamos con el template.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h4>Observar el atributo "tipo" para reaccionar a cambios</h4>
+        <p>Usamos attributeChangedCallback para actualizar la vista si el tipo cambia.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <h4>Registrar y usar en HTML</h4>
+        <p>Registramos el componente y lo usamos con slots nombrados.</p>
+      </div>
+    </div>
+  </div>
+
+<pre><code><span class="cm">// ═══════════════════════════════════════════════</span>
+<span class="cm">// 📁 alerta-mensaje.js — Componente completo</span>
+<span class="cm">// ═══════════════════════════════════════════════</span>
+
+<span class="cm">// ① Creamos el template programáticamente</span>
+<span class="kw">const</span> <span class="nm">template</span> = <span class="nm">document</span>.<span class="fn">createElement</span>(<span class="st">'template'</span>);
+<span class="nm">template</span>.innerHTML = <span class="st">`
+  &lt;style&gt;
+    :host {
+      display: block;
+      margin: .5rem 0;
+      font-family: sans-serif;
+    }
+
+    .alerta {
+      padding: .75rem 1rem;
+      border-radius: 8px;
+      font-size: 14px;
+      display: flex;
+      align-items: flex-start;
+      gap: .6rem;
+      line-height: 1.5;
+    }
+
+    /* Estilos por tipo usando :host([attr]) */
+    :host([tipo="exito"])   .alerta { background:#d4edda; color:#155724; border:1px solid #c3e6cb; }
+    :host([tipo="error"])   .alerta { background:#f8d7da; color:#721c24; border:1px solid #f5c6cb; }
+    :host([tipo="info"])    .alerta { background:#d1ecf1; color:#0c5460; border:1px solid #bee5eb; }
+    :host([tipo="aviso"])   .alerta { background:#fff3cd; color:#856404; border:1px solid #ffeeba; }
+
+    /* Tipo por defecto si no se especifica */
+    .alerta { background:#f8f9fa; color:#383d41; border:1px solid #d6d8db; }
+
+    .icono { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+    .contenido { flex: 1; }
+  &lt;/style&gt;
+
+  &lt;div class="alerta"&gt;
+    &lt;span class="icono"&gt;
+      &lt;slot name="icono"&gt;💬&lt;/slot&gt;
+    &lt;/span&gt;
+    &lt;div class="contenido"&gt;
+      &lt;slot&gt;Mensaje de alerta por defecto.&lt;/slot&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+`</span>;
+
+<span class="cm">// ② Definimos la clase del componente</span>
+<span class="kw">class</span> <span class="cl">AlertaMensaje</span> <span class="kw">extends</span> <span class="cl">HTMLElement</span> {
+
+  <span class="kw">static get</span> <span class="fn">observedAttributes</span>() {
+    <span class="kw">return</span> [<span class="st">'tipo'</span>]; <span class="cm">// ③ Observamos el atributo "tipo"</span>
+  }
+
+  <span class="fn">constructor</span>() {
+    <span class="kw">super</span>();
+    <span class="cm">// Adjuntamos el Shadow DOM y clonamos el template</span>
+    <span class="kw">const</span> <span class="nm">shadow</span> = <span class="kw">this</span>.<span class="fn">attachShadow</span>({ <span class="nm">mode</span>: <span class="st">'open'</span> });
+    <span class="nm">shadow</span>.<span class="fn">appendChild</span>(<span class="nm">template</span>.<span class="nm">content</span>.<span class="fn">cloneNode</span>(<span class="kw">true</span>));
+  }
+
+  <span class="cm">// Si el atributo "tipo" cambia, el CSS ya reacciona por sí solo</span>
+  <span class="cm">// gracias al selector :host([tipo="..."]) — no necesitamos JS extra</span>
+  <span class="fn">attributeChangedCallback</span>(<span class="nm">nombre</span>, <span class="nm">anterior</span>, <span class="nm">nuevo</span>) {
+    <span class="nm">console</span>.<span class="fn">log</span>(<span class="st">`Tipo cambió: ${anterior} → ${nuevo}`</span>);
+  }
+}
+
+<span class="cm">// ④ Registramos el componente</span>
+<span class="nm">customElements</span>.<span class="fn">define</span>(<span class="st">'alerta-mensaje'</span>, <span class="cl">AlertaMensaje</span>);
+
+
+<span class="cm">&lt;!-- ════════════════════════════</span>
+<span class="cm">     📁 index.html — Uso del componente</span>
+<span class="cm">     ════════════════════════════ --&gt;</span>
+<span class="tag-h">&lt;script</span> <span class="at">src</span>=<span class="st">"alerta-mensaje.js"</span> <span class="at">type</span>=<span class="st">"module"</span><span class="tag-h">&gt;&lt;/script&gt;</span>
+
+<span class="tag-h">&lt;alerta-mensaje</span> <span class="at">tipo</span>=<span class="st">"exito"</span><span class="tag-h">&gt;</span>
+  <span class="tag-h">&lt;span</span> <span class="at">slot</span>=<span class="st">"icono"</span><span class="tag-h">&gt;</span>✅<span class="tag-h">&lt;/span&gt;</span>
+  ¡Registro completado con éxito!
+<span class="tag-h">&lt;/alerta-mensaje&gt;</span>
+
+<span class="tag-h">&lt;alerta-mensaje</span> <span class="at">tipo</span>=<span class="st">"error"</span><span class="tag-h">&gt;</span>
+  <span class="tag-h">&lt;span</span> <span class="at">slot</span>=<span class="st">"icono"</span><span class="tag-h">&gt;</span>❌<span class="tag-h">&lt;/span&gt;</span>
+  Error: el servidor no responde. Intente nuevamente.
+<span class="tag-h">&lt;/alerta-mensaje&gt;</span>
+
+<span class="tag-h">&lt;alerta-mensaje</span> <span class="at">tipo</span>=<span class="st">"aviso"</span><span class="tag-h">&gt;</span>
+  <span class="tag-h">&lt;span</span> <span class="at">slot</span>=<span class="st">"icono"</span><span class="tag-h">&gt;</span>⚠️<span class="tag-h">&lt;/span&gt;</span>
+  Tu sesión expirará en 5 minutos.
+<span class="tag-h">&lt;/alerta-mensaje&gt;</span>
+
+<span class="cm">&lt;!-- También podés cambiar el tipo dinámicamente --&gt;</span>
+<span class="tag-h">&lt;script&gt;</span>
+  <span class="kw">const</span> <span class="nm">alerta</span> = <span class="nm">document</span>.<span class="fn">querySelector</span>(<span class="st">'alerta-mensaje'</span>);
+  <span class="nm">alerta</span>.<span class="fn">setAttribute</span>(<span class="st">'tipo'</span>, <span class="st">'info'</span>); <span class="cm">// Cambia el estilo al instante</span>
+<span class="tag-h">&lt;/script&gt;</span></code></pre>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="ic ic-a">🚀</span> Ejercicios propuestos para el aula</div>
+  <ol>
+    <li><strong>Fácil:</strong> Agregá un cuarto tipo <span class="inline-code">tipo="neutro"</span> con colores grises al componente <span class="inline-code">alerta-mensaje</span>.</li>
+    <li><strong>Medio:</strong> Agregá un botón de cierre (×) al componente que dispare un CustomEvent <span class="inline-code">'alerta-cerrada'</span> al hacer click.</li>
+    <li><strong>Medio:</strong> Creá un componente <span class="inline-code">&lt;progreso-barra value="75" max="100" color="green"&gt;</span> que muestre una barra de progreso animada.</li>
+    <li><strong>Difícil:</strong> Creá un componente <span class="inline-code">&lt;tabla-datos url="api.json"&gt;</span> que haga fetch de datos y los muestre en una tabla, con atributo <span class="inline-code">columnas</span> configurable.</li>
+  </ol>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SECCIÓN 7: QUIZ
+══════════════════════════════════════ -->
+<div class="section" id="sec-quiz">
+<div class="sec-header">
+  <h2>Quiz de verificación</h2>
+  <p>5 preguntas para comprobar lo aprendido</p>
+</div>
+
+<div class="card">
+  <div id="quiz-container"></div>
+  <button class="btn prim" id="btn-reset" onclick="resetQuiz()" style="display:none">↺ Repetir quiz</button>
+</div>
+</div>
+
+<!-- ── FOOTER ── -->
+<div class="footer">
+  <div class="footer-text">Guía Web Components • Uso educativo libre</div>
+  <div class="footer-text">Estándar W3C • Todos los navegadores modernos</div>
+</div>
+
+</div><!-- /page -->
+
+<script>
+const NAV_ORDER = ['intro','custom','shadow','templates','lifecycle','practica','quiz'];
+const SEC_IDS = {intro:'sec-intro',custom:'sec-custom',shadow:'sec-shadow',templates:'sec-templates',lifecycle:'sec-lifecycle',practica:'sec-practica',quiz:'sec-quiz'};
+
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(SEC_IDS[id]).classList.add('active');
+  const idx = NAV_ORDER.indexOf(id);
+  document.querySelectorAll('.nav-btn')[idx].classList.add('active');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function switchTab(btn, group, pane) {
+  document.querySelectorAll(`[id^="${group}-"]`).forEach(p => p.classList.remove('on'));
+  btn.parentElement.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('on'));
+  document.getElementById(`${group}-${pane}`).classList.add('on');
+  btn.classList.add('on');
+}
+
+const QUIZ = [
+  {
+    q: '¿Qué regla debe cumplir sí o sí el nombre de un Custom Element?',
+    opts: ['Debe comenzar con mayúscula','Debe contener al menos un guion (-)','Debe terminar en "-element"','Debe tener menos de 20 caracteres'],
+    correct: 1,
+    feedback: 'El estándar obliga a que el nombre contenga al menos un guion (ej: mi-boton, app-header). Esto evita conflictos con etiquetas HTML nativas presentes o futuras, que no contienen guiones.'
+  },
+  {
+    q: '¿Cuál es el lifecycle callback ideal para hacer fetch de datos y renderizar el componente?',
+    opts: ['constructor()','disconnectedCallback()','adoptedCallback()','connectedCallback()'],
+    correct: 3,
+    feedback: 'connectedCallback() se ejecuta cuando el elemento ya está en el DOM y sus atributos están disponibles. Es el momento correcto para inicializar lógica que depende del documento, como fetch de datos o agregar event listeners.'
+  },
+  {
+    q: '¿Qué hace this.attachShadow({ mode: "open" }) en un componente?',
+    opts: ['Adjunta un archivo CSS externo','Crea un árbol DOM aislado y encapsulado','Observa cambios en los atributos','Registra el componente en el navegador'],
+    correct: 1,
+    feedback: 'attachShadow() crea el Shadow DOM: un árbol interno, separado e independiente del DOM principal. Con mode "open" aún podés acceder a él desde JS externo usando element.shadowRoot.'
+  },
+  {
+    q: '¿Para qué sirven los <slot> dentro de un template de Web Component?',
+    opts: ['Para definir variables CSS del componente','Para declarar los atributos observados','Para crear puntos de inserción donde el usuario puede poner su propio HTML','Para emitir eventos personalizados'],
+    correct: 2,
+    feedback: 'Los slots son "agujeros" en el template donde quien usa el componente puede insertar contenido HTML personalizado. Son equivalentes a "children" en React. Pueden ser anónimos (slot por defecto) o nombrados (slot name="titulo").'
+  },
+  {
+    q: '¿Qué necesitás declarar para que attributeChangedCallback se dispare al cambiar un atributo?',
+    opts: ['Nada, se dispara automáticamente para todos los atributos','Registrar el atributo en el método addEventListener()','Declararlo en el getter estático observedAttributes','Usar setAttribute() en lugar de atributos HTML directos'],
+    correct: 2,
+    feedback: 'El getter estático observedAttributes debe retornar un array con los nombres de los atributos a vigilar. Sin esta declaración, el navegador no notifica ningún cambio de atributo, por rendimiento.'
+  }
+];
+
+let current = 0, score = 0;
+
+function renderQuiz() {
+  const c = document.getElementById('quiz-container');
+  if (current >= QUIZ.length) {
+    const pct = Math.round((score / QUIZ.length) * 100);
+    const msg = score === QUIZ.length
+      ? '¡Perfecto! Dominás todos los conceptos fundamentales.'
+      : score >= 3
+      ? '¡Muy bien! Repasá los que fallaste para afianzarlos.'
+      : 'Te recomendamos releer el material antes de volver a intentarlo.';
+    c.innerHTML = `
+      <div class="quiz-score">
+        <div class="score-num">${score}/${QUIZ.length}</div>
+        <div class="score-label">${pct}% de respuestas correctas</div>
+        <p>${msg}</p>
+      </div>`;
+    document.getElementById('btn-reset').style.display = 'inline-flex';
+    return;
+  }
+  const q = QUIZ[current];
+  c.innerHTML = `
+    <div style="font-size:11px;color:var(--text3);margin-bottom:.6rem">Pregunta ${current+1} de ${QUIZ.length}</div>
+    <div class="quiz-q">${q.q}</div>
+    <div class="quiz-opts">
+      ${q.opts.map((o,i) => `<button class="quiz-opt" onclick="answer(${i})">${o}</button>`).join('')}
+    </div>
+    <div id="qfb"></div>`;
+}
+
+function answer(idx) {
+  const q = QUIZ[current];
+  document.querySelectorAll('.quiz-opt').forEach(b => b.disabled = true);
+  document.querySelectorAll('.quiz-opt')[q.correct].classList.add('correct');
+  const fb = document.getElementById('qfb');
+  if (idx === q.correct) {
+    score++;
+    document.querySelectorAll('.quiz-opt')[idx].classList.add('correct');
+    fb.innerHTML = `<div class="quiz-feedback" style="background:var(--green-light);color:var(--green-dark)">✅ <strong>¡Correcto!</strong> ${q.feedback}</div>`;
+  } else {
+    document.querySelectorAll('.quiz-opt')[idx].classList.add('wrong');
+    fb.innerHTML = `<div class="quiz-feedback" style="background:var(--coral-light);color:var(--coral)">❌ <strong>Incorrecto.</strong> ${q.feedback}</div>`;
+  }
+  setTimeout(() => { current++; renderQuiz(); }, 2500);
+}
+
+function resetQuiz() {
+  current = 0; score = 0;
+  document.getElementById('btn-reset').style.display = 'none';
+  renderQuiz();
+}
+
+renderQuiz();
+</script>
+</body>
+</html>
