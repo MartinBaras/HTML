@@ -1,0 +1,18 @@
+Crear o modificar: CREATE OR REPLACE VIEW vista_productos_activos AS SELECT...
+
+Eliminar: DROP VIEW IF EXISTS vistas_prodictps_activos;
+
+Vistas avanzadas actualizables y with check option.
+Vistas con multiples joins y subconsultas: Una vista es una
+consulta SQL almacenada bajo un nombre, no duplica datos, cada vez que se consulta MySQL ejecutala definicion subyacente
+
+Vistas con multiples joins: Las vistas mas valiosas son aquellas que combinan varias tablas y presentan una vista unificada
+de los datos. la clave es diseñar la vista para responder a una pregunta de negocio (estructura de la base de datos) concreto
+
+Vistas actualizables with check option: Que es una vista actualizable? una vista actualizable
+esa aquella donde se puede ejecutar INSERT, UPDATE y DELETE. Estos cambios se propagan atuomaticamente a la tabla base subyacente
+CONDICIONES PARA QUE UNA VISTA SEA ACTUALIZABLE: Mysql impone condiciones ecstricas, si algunas de esta condicione se viola
+las misma vista quedara de solo lectura
+
+
+TAREA Crear filtros productivos a la logica de negocio
